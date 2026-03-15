@@ -1,0 +1,8 @@
+# Root ignores (repo-level). Project-specific ignores live in hamburcode-web/.gitignore
+
+**/node_modules
+**/.next
+**/out
+**/.env*
+**/*.tsbuildinfo
+

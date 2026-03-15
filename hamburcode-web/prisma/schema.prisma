@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+model Product {
+  id          String   @id
+  name        String
+  description String
+  category    String
+  imageSrc    String
+  price       Int
+  active      Boolean  @default(true)
+  stock       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  orderNumber   String      @unique
+  createdAt     DateTime    @default(now())
+  status        OrderStatus @default(PENDING)
+
+  currency      String      @default("ARS")
+  subtotal      Int
+  shipping      Int
+  total         Int
+
+  customerName  String
+  customerPhone String
+
+  addressLine1  String
+  addressLine2  String?
+  city          String?
+  notes         String?
+
+  paymentMethod String
+
+  lat           Float?
+  lng           Float?
+
+  items         OrderItem[]
+  events        AuditEvent[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+
+  name      String
+  unitPrice Int
+  qty       Int
+  lineTotal Int
+
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  orderId   String
+  type      String
+  message   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
