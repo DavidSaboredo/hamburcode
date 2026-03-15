@@ -6,7 +6,7 @@ Catálogo + carrito + checkout + panel admin para gestión de pedidos de una ham
 
 - Next.js (App Router) + TypeScript
 - Tailwind CSS
-- Prisma + SQLite (dev local)
+- Prisma + Postgres (deploy) / Postgres (local recomendado)
 
 ## Getting Started
 
@@ -27,16 +27,18 @@ Si en tu Windows `npm` no se reconoce, usá la ruta completa:
 
 ### 2) Base de datos (Prisma)
 
-La primera vez, generá y migrá la DB:
+La primera vez, creá las tablas en la DB:
 
 ```powershell
-& "C:\Program Files\nodejs\npx.cmd" prisma migrate dev --name init
+& "C:\Program Files\nodejs\npx.cmd" prisma db push
 ```
 
 ### 3) Variables de entorno
 
 Copiá `.env.example` a `.env.local` y completá lo mínimo:
 
+- `DATABASE_URL` (Postgres)
+- `DIRECT_URL` (Postgres, recomendado)
 - `ADMIN_PASSWORD` (ej: hambur1)
 - `ADMIN_SESSION_SECRET` (clave larga)
 - `NEXT_PUBLIC_BASE_URL` (ej: http://localhost:3000)
@@ -77,3 +79,39 @@ npm run build
 
 - No subir secretos: `.env*` está ignorado.
 - No subir DB local: `prisma/*.db` está ignorado.
+
+## Deploy en Vercel
+
+### 1) Importar repo
+
+- En Vercel: Add New → Project → Import Git Repository
+- Seleccionar `DavidSaboredo/hamburcode`
+- Root Directory: `hamburcode-web`
+
+### 2) Base de datos
+
+Opción recomendada para demos: Vercel Postgres.
+
+- Vercel → Storage → Postgres → Create Database
+- Copiar variables a tu proyecto (Vercel lo hace automáticamente si linkeás el storage)
+
+Variables que usa Prisma:
+
+- `DATABASE_URL`
+- `DIRECT_URL`
+
+### 3) Variables del admin
+
+Configurar en Vercel → Project → Settings → Environment Variables:
+
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+- `NEXT_PUBLIC_BASE_URL` (el dominio de Vercel, ej: https://hamburcode.vercel.app)
+
+### 4) Build
+
+El proyecto incluye script `vercel-build` que ejecuta:
+
+- `prisma generate`
+- `prisma db push`
+- `next build`
