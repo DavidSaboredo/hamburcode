@@ -16,7 +16,7 @@ type MenuItem = {
   tags?: string[];
 };
 
-const WHATSAPP_NUMBER = "5491100000000";
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_STORE_WHATSAPP ?? "5493442462463";
 const LOGO_SRC = "/logo%20empresa.png";
 
 const menu: MenuItem[] = [
@@ -234,7 +234,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl px-5 pt-10 pb-28">
+      <main className="mx-auto w-full max-w-6xl px-5 pt-10 pb-40 sm:pb-28">
         <section className="grid gap-6 rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900 to-zinc-950 p-7 md:grid-cols-[1.2fr_0.8fr] md:gap-10 md:p-10">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200">
@@ -458,15 +458,15 @@ export default function Home() {
       </main>
 
       {cartCount > 0 ? (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-zinc-950/80 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-4">
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-zinc-950/80 backdrop-blur pb-[env(safe-area-inset-bottom)]">
+          <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <div className="min-w-0">
               <div className="truncate text-sm font-semibold">
                 {cartCount === 1 ? "1 ítem en el carrito" : `${cartCount} ítems en el carrito`}
               </div>
               <div className="text-xs text-zinc-400">Total: {formatARS(cartTotal)}</div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 sm:justify-end">
               <Link
                 className="inline-flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/5 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                 href="/checkout"
