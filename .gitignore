@@ -6,3 +6,7 @@
 **/.env*
 !**/.env.example
 **/*.tsbuildinfo
+
+# Private docs (local only)
+/PRIVATE_MANUAL.md
+/docs-private/
