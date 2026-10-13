@@ -208,7 +208,7 @@ export default function Home() {
             <div className="relative h-14 w-14 overflow-hidden rounded-2xl border border-white/10 bg-white/5 md:h-16 md:w-16">
               <Image
                 src={LOGO_SRC}
-                alt="Logo"
+                alt="HamburCode"
                 fill
                 sizes="(min-width: 768px) 64px, 56px"
                 className="object-contain scale-150"
@@ -246,7 +246,7 @@ export default function Home() {
             </h1>
             <p className="max-w-xl text-base leading-7 text-zinc-300">
               Elegí tu burger, mirá ingredientes claros y pedí al toque por
-              WhatsApp. Diseño oscuro, directo y con foco en el producto.
+              WhatsApp.
             </p>
             <div className="flex flex-wrap gap-3">
               <a
@@ -278,7 +278,7 @@ export default function Home() {
               <div className="text-sm font-semibold text-zinc-200">
                 Destacadas
               </div>
-              <div className="grid gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {menu
                   .filter((m) => (m.tags ?? []).length > 0)
                   .slice(0, 3)
@@ -290,7 +290,7 @@ export default function Home() {
                       className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left transition-colors hover:bg-white/10"
                     >
                       <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold">
+                        <div className="text-sm font-semibold leading-snug">
                           {m.name}
                         </div>
                         <div className="truncate text-xs text-zinc-400">
@@ -312,7 +312,7 @@ export default function Home() {
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Menú</h2>
               <p className="mt-1 text-sm text-zinc-400">
-                Nombres claros, ingredientes directos, precio visible.
+                Elegí tus favoritas y armá tu pedido en un minuto.
               </p>
             </div>
 
@@ -436,7 +436,7 @@ export default function Home() {
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <div className="font-semibold text-zinc-200">HamburCode</div>
-              <div>Delivery • Take away • Horarios a definir</div>
+              <div>Delivery • Take away • Consultá horarios por WhatsApp</div>
             </div>
             <a
               className="inline-flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/5 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10"

@@ -106,6 +106,21 @@ export default function CheckoutPage() {
   const errors = useMemo(() => validateCustomer(customer), [customer]);
   const isValid = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
+  // Los errores se muestran recién cuando el cliente sale del campo o intenta enviar,
+  // así el formulario no arranca lleno de mensajes en rojo.
+  const [touched, setTouched] = useState<Partial<Record<keyof CustomerForm, boolean>>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const shownErrors = useMemo(() => {
+    if (submitAttempted) return errors;
+    const out: typeof errors = {};
+    for (const key of Object.keys(errors) as (keyof CustomerForm)[]) {
+      if (touched[key]) out[key] = errors[key];
+    }
+    return out;
+  }, [errors, touched, submitAttempted]);
+  const markTouched = (field: keyof CustomerForm) =>
+    setTouched((prev) => (prev[field] ? prev : { ...prev, [field]: true }));
+
   useEffect(() => {
     try {
       const rawProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
@@ -155,10 +170,11 @@ export default function CheckoutPage() {
   const subtotal = useMemo(() => lines.reduce((s, l) => s + l.lineTotal, 0), [lines]);
 
   const shipping = useMemo(() => {
+    if (lines.length === 0) return 0;
     const store = { lat: -34.6037, lng: -58.3816 };
     const customerGeo = customer.geo ? { lat: customer.geo.lat, lng: customer.geo.lng } : undefined;
     return calculateShippingARS({ store, customer: customerGeo });
-  }, [customer.geo]);
+  }, [customer.geo, lines.length]);
 
   const total = subtotal + shipping;
 
@@ -194,6 +210,7 @@ export default function CheckoutPage() {
 
   const submit = async () => {
     setServerError(null);
+    setSubmitAttempted(true);
 
     if (lines.length === 0) {
       setServerError("Tu pedido está vacío.");
@@ -306,7 +323,7 @@ export default function CheckoutPage() {
           <div className="flex items-end justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-white">
-                Mi Pedido Detallado
+                Mi pedido
               </h1>
               <div className="mt-1 text-sm text-zinc-400">
                 Revisá cantidades, eliminá productos y confirmá el envío.
@@ -392,7 +409,7 @@ export default function CheckoutPage() {
         <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-xl font-bold tracking-tight text-white">Datos del cliente</h2>
           <div className="mt-1 text-sm text-zinc-400">
-            Campos obligatorios marcados. Validación en tiempo real.
+            Los campos con * son obligatorios.
           </div>
 
           {serverError ? (
@@ -408,8 +425,9 @@ export default function CheckoutPage() {
                 className="mt-1 h-11 w-full rounded-2xl border border-white/10 bg-black/20 px-4 text-sm text-white outline-none focus:border-white/20"
                 value={customer.name}
                 onChange={(e) => setCustomer((p) => ({ ...p, name: e.target.value }))}
+                onBlur={() => markTouched("name")}
               />
-              {errors.name ? <div className="mt-1 text-xs text-red-200">{errors.name}</div> : null}
+              {shownErrors.name ? <div className="mt-1 text-xs text-red-200">{shownErrors.name}</div> : null}
             </div>
 
             <div>
@@ -418,8 +436,9 @@ export default function CheckoutPage() {
                 className="mt-1 h-11 w-full rounded-2xl border border-white/10 bg-black/20 px-4 text-sm text-white outline-none focus:border-white/20"
                 value={customer.phone}
                 onChange={(e) => setCustomer((p) => ({ ...p, phone: e.target.value }))}
+                onBlur={() => markTouched("phone")}
               />
-              {errors.phone ? <div className="mt-1 text-xs text-red-200">{errors.phone}</div> : null}
+              {shownErrors.phone ? <div className="mt-1 text-xs text-red-200">{shownErrors.phone}</div> : null}
             </div>
 
             <div>
@@ -428,8 +447,9 @@ export default function CheckoutPage() {
                 className="mt-1 h-11 w-full rounded-2xl border border-white/10 bg-black/20 px-4 text-sm text-white outline-none focus:border-white/20"
                 value={customer.email}
                 onChange={(e) => setCustomer((p) => ({ ...p, email: e.target.value }))}
+                onBlur={() => markTouched("email")}
               />
-              {errors.email ? <div className="mt-1 text-xs text-red-200">{errors.email}</div> : null}
+              {shownErrors.email ? <div className="mt-1 text-xs text-red-200">{shownErrors.email}</div> : null}
             </div>
 
             <div>
@@ -438,9 +458,10 @@ export default function CheckoutPage() {
                 className="mt-1 h-11 w-full rounded-2xl border border-white/10 bg-black/20 px-4 text-sm text-white outline-none focus:border-white/20"
                 value={customer.addressLine1}
                 onChange={(e) => setCustomer((p) => ({ ...p, addressLine1: e.target.value }))}
+                onBlur={() => markTouched("addressLine1")}
               />
-              {errors.addressLine1 ? (
-                <div className="mt-1 text-xs text-red-200">{errors.addressLine1}</div>
+              {shownErrors.addressLine1 ? (
+                <div className="mt-1 text-xs text-red-200">{shownErrors.addressLine1}</div>
               ) : null}
             </div>
 
@@ -467,6 +488,7 @@ export default function CheckoutPage() {
               <select
                 className="mt-1 h-11 w-full rounded-2xl border border-white/10 bg-black/20 px-4 text-sm text-white outline-none focus:border-white/20"
                 value={customer.paymentMethod}
+                onBlur={() => markTouched("paymentMethod")}
                 onChange={(e) =>
                   setCustomer((p) => ({ ...p, paymentMethod: e.target.value as PaymentMethod | "" }))
                 }
@@ -476,8 +498,8 @@ export default function CheckoutPage() {
                 <option value="transferencia">Transferencia</option>
                 <option value="mercadopago">Mercado Pago</option>
               </select>
-              {errors.paymentMethod ? (
-                <div className="mt-1 text-xs text-red-200">{errors.paymentMethod}</div>
+              {shownErrors.paymentMethod ? (
+                <div className="mt-1 text-xs text-red-200">{shownErrors.paymentMethod}</div>
               ) : null}
             </div>
 
