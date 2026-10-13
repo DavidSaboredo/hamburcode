@@ -1,6 +1,6 @@
 ## HamburCode
 
-Repositorio principal del proyecto. La aplicación web vive en la carpeta [hamburcode-web](file:///c:/Users/cami_/OneDrive/Escritorio/repos%20Laruzo/HamburCode/hamburcode-web).
+Repositorio principal del proyecto. La aplicación web vive en la carpeta [hamburcode-web](hamburcode-web).
 
 ### Qué incluye
 
@@ -12,4 +12,4 @@ Repositorio principal del proyecto. La aplicación web vive en la carpeta [hambu
 
 Ir a la carpeta `hamburcode-web` y seguir el README de esa carpeta:
 
-- [hamburcode-web/README.md](file:///c:/Users/cami_/OneDrive/Escritorio/repos%20Laruzo/HamburCode/hamburcode-web/README.md)
+- [hamburcode-web/README.md](hamburcode-web/README.md)
