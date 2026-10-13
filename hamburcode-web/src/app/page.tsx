@@ -268,7 +268,7 @@ export default function Home() {
               </a>
             </div>
             <div className="text-xs text-zinc-400">
-              Cambiá el número en WHATSAPP_NUMBER (page.tsx).
+              Pedí online o escribinos por WhatsApp.
             </div>
           </div>
 
