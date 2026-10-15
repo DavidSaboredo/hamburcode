@@ -452,7 +452,7 @@ export default function Home() {
           </div>
 
           <div className="mt-6 text-xs text-zinc-500">
-            Copyright © 2026 Laruzo. Todos los derechos reservados. Diseñado y desarrollado por Laruzo.
+            Copyright © 2026 David Saboredo. Todos los derechos reservados. Diseñado y desarrollado por David Saboredo.
           </div>
         </footer>
       </main>
