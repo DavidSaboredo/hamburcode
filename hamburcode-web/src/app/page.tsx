@@ -461,7 +461,7 @@ export default function Home() {
           </div>
 
           <div className="mt-6 text-xs text-zinc-500">
-            Copyright © 2026 David Saboredo. Todos los derechos reservados. Diseñado y desarrollado por David Saboredo.
+            Copyright © 2026 HamburCode. Todos los derechos reservados. Diseñado y desarrollado por laruzo-dev.
           </div>
         </footer>
       </main>
