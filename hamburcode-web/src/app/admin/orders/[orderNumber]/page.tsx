@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { formatARS } from "@/lib/menu";
 import OrderActions from "./OrderActions";
 import { verifyAdminSessionToken } from "@/lib/adminSession";
+import { eventLabel } from "@/lib/orderStatus";
 
 export default async function AdminOrderPage(props: {
   params: Promise<{ orderNumber: string }>;
@@ -123,13 +124,13 @@ export default async function AdminOrderPage(props: {
         </div>
 
         <div className="mt-6 text-xs text-zinc-400">
-          Auditoría:
+          Historial:
           <div className="mt-2 space-y-1">
             {order.events
               .slice(0, 10)
-              .map((e: { id: string; createdAt: Date; type: string; message: string }) => (
+              .map((e: { id: string; createdAt: Date; type: string; metadata: unknown }) => (
               <div key={e.id}>
-                {new Date(e.createdAt).toLocaleString("es-AR")} · {e.type} · {e.message}
+                {new Date(e.createdAt).toLocaleString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" })} · {eventLabel(e, "local")}
               </div>
               ))}
           </div>

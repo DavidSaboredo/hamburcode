@@ -92,6 +92,15 @@ function buildWhatsAppLink(params: {
 type CartState = Record<string, number>;
 const CART_STORAGE_KEY = "hamburcode.cart.v1";
 
+function readCartFromStorage(): CartState {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    return raw ? normalizeCart(JSON.parse(raw)) : {};
+  } catch {
+    return {};
+  }
+}
+
 function normalizeCart(value: unknown): CartState {
   if (!value || typeof value !== "object") return {};
   const record = value as Record<string, unknown>;
@@ -109,24 +118,24 @@ export default function Home() {
     MenuCategory | "all"
   >("all");
   const [openItemId, setOpenItemId] = useState<string | null>(null);
-  const [cart, setCart] = useState<CartState>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const raw = localStorage.getItem(CART_STORAGE_KEY);
-      if (!raw) return {};
-      return normalizeCart(JSON.parse(raw));
-    } catch {
-      return {};
-    }
-  });
+  // El carrito guardado se lee recién en el navegador, para que el HTML del servidor coincida.
+  const [cart, setCart] = useState<CartState>({});
+  const [cartReady, setCartReady] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- lectura única de localStorage al montar
+    setCart(readCartFromStorage());
+    setCartReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!cartReady) return;
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     } catch {
       return;
     }
-  }, [cart]);
+  }, [cart, cartReady]);
 
   const persistCart = (next: CartState) => {
     try {

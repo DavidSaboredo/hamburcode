@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { statusLabel } from "@/lib/orderStatus";
 
 // Lista de pedidos del admin:
 // - Render inicial server-side, con refresco client-side por polling (cada 5s)
@@ -37,16 +38,6 @@ function formatARS(value: number) {
     currency: "ARS",
     maximumFractionDigits: 0,
   }).format(value);
-}
-
-function statusLabel(status: OrderStatus) {
-  if (status === "PENDING") return "En espera";
-  if (status === "CONFIRMED") return "Pedido recibido";
-  if (status === "IN_PROGRESS") return "En preparación";
-  if (status === "READY") return "En envío";
-  if (status === "CANCELLED") return "Cancelado";
-  if (status === "DELIVERED") return "Entregado";
-  return status;
 }
 
 function statusClass(status: OrderStatus) {
@@ -280,7 +271,7 @@ export default function OrdersList(props: { initialOrders: OrderSummary[] }) {
                 ) : null}
               </div>
               <div className="mt-1 text-xs text-zinc-400">
-                {new Date(o.createdAt).toLocaleString("es-AR")} · {o.customerName}
+                {new Date(o.createdAt).toLocaleString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" })} · {o.customerName}
               </div>
             </div>
             <div className="shrink-0 text-right">

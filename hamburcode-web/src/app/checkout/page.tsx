@@ -87,7 +87,9 @@ function getOrderNumber(value: unknown) {
 }
 
 export default function CheckoutPage() {
-  const [cart, setCart] = useState<CartState>(() => readCartFromStorage());
+  // El carrito guardado se lee recién en el navegador, para que el HTML del servidor coincida.
+  const [cart, setCart] = useState<CartState>({});
+  const [cartReady, setCartReady] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [createdOrder, setCreatedOrder] = useState<{ orderNumber: string } | null>(null);
@@ -144,10 +146,16 @@ export default function CheckoutPage() {
   }, []);
 
   useEffect(() => {
+    setCart(readCartFromStorage());
+    setCartReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!cartReady) return;
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     } catch {}
-  }, [cart]);
+  }, [cart, cartReady]);
 
   const lines = useMemo(() => {
     const out: { id: string; name: string; unitPrice: number; qty: number; lineTotal: number }[] = [];
@@ -339,7 +347,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="mt-6 space-y-3">
-            {lines.length === 0 ? (
+            {!cartReady ? null : lines.length === 0 ? (
               <div className="rounded-2xl border border-white/10 bg-black/20 p-5 text-sm text-zinc-300">
                 No hay productos en el pedido.
               </div>
